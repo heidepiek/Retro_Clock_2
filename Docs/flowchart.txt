@@ -1,0 +1,41 @@
+mainUserInput()
+	setupclockmenu()
+		displayMainMenu()						//menuState = MAIN_MENU
+		while (!done) touchCheck()
+		  switch (menuState)
+			MAIN_MENU:	
+			  processMainMenu()	
+				BUTTON1:  
+				  displayTzMenu()		//menuState = TZ_MENU
+					displayTzRegion()
+					displayTzCity()
+				BUTTON3:  
+				  displayAlarmMenu()	//menuState = ALARM_MENU
+					displayAlarmSetting()
+				BUTTON4:  
+				  displayWiFiMenu()		//menuState = WIFI_MENU
+					displayWiFiSSID()
+					displayWiFiPW()
+				BUTTON6:  loadPacmanIcons() / loadMsPacmanIcons()
+				BUTTON7:  playPM
+				BUTTON9:  setGameSpeed()
+				BUTTON10: displayClock12_24()
+				BUTTON11: displayAboutMenu()		//menuState = ABOUT_MENU
+				BUTTON12: playGobble
+					done = true
+			ALARM_MENU:  
+			  processAlarmMenu()
+				BUTTON1:  ALARM_ENABLED  playGobble
+				BUTTON2:  Increment Alarm Hour
+				BUTTON3:  Increment Alarm Minute
+				BUTTON4:  ALARM_DISABLED  playGobble
+				BUTTON5:  Decrement Alarm Hour
+				BUTTON6:  Decrement Alarm Minute
+				BUTTON7:  Volume Up	  playGobble
+				BUTTON10: VolumeDown  playGobble
+					displayAlarmMenu()				//menuState = ALARM_MENU
+				BUTTON12: Save & Exit
+					displayMainMenu()				//menuState = MAIN_MENU
+				
+				
+		  
