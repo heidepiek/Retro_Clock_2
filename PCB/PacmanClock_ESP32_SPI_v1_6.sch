@@ -399,45 +399,45 @@ $EndComp
 $Comp
 L Mechanical:MountingHole H5
 U 1 1 62067CF3
-P 2350 1150
-F 0 "H5" H 2450 1196 50  0000 L CNN
-F 1 "MountingHole" H 2450 1105 50  0000 L CNN
-F 2 "MountingHole:MountingHole_2.7mm_M2.5_DIN965" H 2350 1150 50  0001 C CNN
-F 3 "~" H 2350 1150 50  0001 C CNN
-	1    2350 1150
+P 850 7325
+F 0 "H5" H 950 7371 50  0000 L CNN
+F 1 "MountingHole" H 950 7280 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.7mm_M2.5_DIN965" H 850 7325 50  0001 C CNN
+F 3 "~" H 850 7325 50  0001 C CNN
+	1    850  7325
 	1    0    0    -1  
 $EndComp
 $Comp
 L Mechanical:MountingHole H7
 U 1 1 62068558
-P 3150 1150
-F 0 "H7" H 3250 1196 50  0000 L CNN
-F 1 "MountingHole" H 3250 1105 50  0000 L CNN
-F 2 "MountingHole:MountingHole_2.7mm_M2.5_DIN965" H 3150 1150 50  0001 C CNN
-F 3 "~" H 3150 1150 50  0001 C CNN
-	1    3150 1150
+P 1650 7325
+F 0 "H7" H 1750 7371 50  0000 L CNN
+F 1 "MountingHole" H 1750 7280 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.7mm_M2.5_DIN965" H 1650 7325 50  0001 C CNN
+F 3 "~" H 1650 7325 50  0001 C CNN
+	1    1650 7325
 	1    0    0    -1  
 $EndComp
 $Comp
 L Mechanical:MountingHole H6
 U 1 1 62069288
-P 2350 1450
-F 0 "H6" H 2450 1496 50  0000 L CNN
-F 1 "MountingHole" H 2450 1405 50  0000 L CNN
-F 2 "MountingHole:MountingHole_2.7mm_M2.5_DIN965" H 2350 1450 50  0001 C CNN
-F 3 "~" H 2350 1450 50  0001 C CNN
-	1    2350 1450
+P 850 7625
+F 0 "H6" H 950 7671 50  0000 L CNN
+F 1 "MountingHole" H 950 7580 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.7mm_M2.5_DIN965" H 850 7625 50  0001 C CNN
+F 3 "~" H 850 7625 50  0001 C CNN
+	1    850  7625
 	1    0    0    -1  
 $EndComp
 $Comp
 L Mechanical:MountingHole H8
 U 1 1 6206987F
-P 3150 1450
-F 0 "H8" H 3250 1496 50  0000 L CNN
-F 1 "MountingHole" H 3250 1405 50  0000 L CNN
-F 2 "MountingHole:MountingHole_2.7mm_M2.5_DIN965" H 3150 1450 50  0001 C CNN
-F 3 "~" H 3150 1450 50  0001 C CNN
-	1    3150 1450
+P 1650 7625
+F 0 "H8" H 1750 7671 50  0000 L CNN
+F 1 "MountingHole" H 1750 7580 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.7mm_M2.5_DIN965" H 1650 7625 50  0001 C CNN
+F 3 "~" H 1650 7625 50  0001 C CNN
+	1    1650 7625
 	1    0    0    -1  
 $EndComp
 NoConn ~ 4700 3500
@@ -744,7 +744,7 @@ L Device:R_Small_US R2
 U 1 1 62C74430
 P 3050 2050
 F 0 "R2" H 3118 2096 50  0000 L CNN
-F 1 "0" H 3118 2005 50  0000 L CNN
+F 1 "200" H 3118 2005 50  0000 L CNN
 F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder" H 3050 2050 50  0001 C CNN
 F 3 "~" H 3050 2050 50  0001 C CNN
 	1    3050 2050
@@ -966,4 +966,6 @@ Wire Wire Line
 Connection ~ 4775 6900
 Wire Wire Line
 	3975 5800 2525 5800
+Text Notes 2825 1550 0    39   ~ 0
+-----  LDR Options  -----\nLDR present  -  R2 not installed\nLDR not present  -  R2 installed
 $EndSCHEMATC
