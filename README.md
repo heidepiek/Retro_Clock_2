@@ -1,3 +1,23 @@
+
+
+
+![Pacman Clock](./images/pacman_clock.gif)
+
+# Retro Clock 2
+
+This is a personal customized version of the original ESP32 Pacman Clock project.  
+I've added some visual and functional enhancements to suit my own preferences.
+
+### My additions:
+- Blinking dots between hours and minutes
+- Rectangle around the time
+- Date and day display
+- Text below the time: “ESP32 Pacman Clock”
+- Pacman and ghost icons
+
+The rest of this README reflects the original project, which deserves full credit for the excellent foundation.
+
+
 # Retro_Clock_2
  Improved version of Retro_Clock
  1. Redesigned all of clock case parts with freeCAD. results in cleaner parts.
