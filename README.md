@@ -1,7 +1,7 @@
 
 
 
-![Pacman Clock](./images/pacman_clock.gif)
+![Pacman Clock](./Images/pacman_clock.gif)
 
 # Retro Clock 2
 
