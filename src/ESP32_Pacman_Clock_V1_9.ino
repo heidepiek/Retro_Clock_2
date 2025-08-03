@@ -29,7 +29,22 @@
         12. Supported time zones tables stored in files (SPIFFS).
 */
 
+/*
+
+  Modifications by Harrie Bosgraaf, August 3, 2025
+
+  I have made some changes to this already highly modified clock:
+
+  1. The two dots between hours and minutes now blink every second.
+  2. Added a rectangle around the time display.
+  3. Day and date are now shown on screen.
+  4. Added the text "ESP32 Pacman Clock" below the time.
+  5. Placed a Pacman icon and a ghost icon on the display.
+*/
+
 #define FILE_NAME "ESP32_Pacman_Clock_V1_9.ino"
+
+int lastSecond = -1;  // Houdt bij welke seconde we als laatste hebben gecheckt
 
 #define BUFFERED_WAV
 #define NTP_ENABLED
@@ -585,7 +600,27 @@ int curWavLoaded = WAV_NULL;
 
 int audioState = AUDIO_IDLE;
 
-                  
+  void drawColonBlinking() {
+  DateTime now = rtc.now();
+  int s = now.second();
+
+  // Eén regel voor positie van de stippen
+  int colonX = clockConfig.clock24 ? 156 : 158;
+
+  // Bepaal kleur
+  uint16_t dotColor = (clockConfig.alarmStatus == ALARM_ENABLED) ? TFT_RED : TFT_WHITE;
+
+  // Teken of wis colon
+  uint16_t colorToDraw = (s % 2 == 0) ? dotColor : TFT_BLACK;
+
+  myGLCD.fillCircle(colonX, 112, 4, colorToDraw);
+  myGLCD.fillCircle(colonX, 132, 4, colorToDraw);
+}
+
+
+
+
+         
 
 //////////////////////////////////////////////////////////
 //
@@ -631,6 +666,57 @@ void initConfig(void)
 
 
 bool WiFi_Connect_Flag = false;
+
+
+void drawPacman2(int x, int y, int size) {
+  // Hoofd - geel rondje
+  myGLCD.fillCircle(x, y, size, TFT_YELLOW);
+
+  // Mond - zwarte driehoek
+  myGLCD.fillTriangle(x, y, x + size, y - size / 2, x + size, y + size / 2, TFT_BLACK);
+
+  // Oog - wit rondje
+  int eyeX = x - size / 3;
+  int eyeY = y - size / 3;
+  int eyeRadius = size / 5;
+  myGLCD.fillCircle(eyeX, eyeY, eyeRadius, TFT_WHITE);
+
+  // Pupil - zwart rondje in oog
+  myGLCD.fillCircle(eyeX, eyeY, eyeRadius / 2, TFT_BLACK);
+}
+
+void drawGhost(int x, int y, int size) {
+  // Hoofd (halve cirkel bovenaan)
+  myGLCD.fillCircle(x, y, size, TFT_RED);
+
+  // Lichaam (rechthoek onder het hoofd)
+  myGLCD.fillRect(x - size, y, size * 2, size * 1.5, TFT_RED);
+
+  // Onderkant zigzag (spookstaart)
+  int zigzagHeight = size / 3;
+  for (int i = -size; i < size; i += zigzagHeight) {
+    myGLCD.fillTriangle(
+      x + i, y + size * 1.5,
+      x + i + zigzagHeight / 2, y + size * 1.5 + zigzagHeight,
+      x + i + zigzagHeight, y + size * 1.5,
+      TFT_RED
+    );
+  }
+
+  // Ogen (wit)
+  int eyeRadius = size / 4;
+  int eyeY = y - size / 3;
+  myGLCD.fillCircle(x - size / 2, eyeY, eyeRadius, TFT_WHITE);
+  myGLCD.fillCircle(x + size / 2, eyeY, eyeRadius, TFT_WHITE);
+
+  // Pupillen (zwart)
+  int pupilRadius = eyeRadius / 2;
+  myGLCD.fillCircle(x - size / 2, eyeY, pupilRadius, TFT_BLACK);
+  myGLCD.fillCircle(x + size / 2, eyeY, pupilRadius, TFT_BLACK);
+}
+
+
+
 
 
 /////////////////////////////////////////////////////////////
@@ -832,6 +918,9 @@ void setup()
 //
 void loop()
 {
+
+  drawColonBlinking();
+
   audioPlayer();  // check to see if anything is playing
   
   setGameSpeed(); // Set game animation speed
@@ -3182,15 +3271,43 @@ void UpdateDisp()
 
   pushTA();       // push Text Attributes on stack
 
+ const char* daysOfWeek[7] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};                                 // aangepast voor de dagen en de datum en jaartal
+
+DateTime now = rtc.now();
+char dateStr[30];
+
+// Maak een string met dag, datum en maand
+sprintf(dateStr, "%s %02d-%02d-%04d", daysOfWeek[now.dayOfTheWeek()], now.day(), now.month(), now.year());
+
+myGLCD.setTextSize(2);
+myGLCD.setTextColor(TFT_GREEN, TFT_BLACK);
+myGLCD.drawString(dateStr, 70, 86);  // Pas x,y aan naar wens
+
+// Tekst onder de tijd zetten
+myGLCD.setTextSize(1);  // grootte 1 voor klein tekstje
+myGLCD.setTextColor(TFT_MAGENTA, TFT_BLACK);  // magenta tekst op zwarte achtergrond
+myGLCD.drawString("esp32 pacman clock", 101, 150);  // x=101, y=150 (pas aan indien nodig)
+
+
+// Pacman tekenen rechts van de tekst
+drawPacman2(80, 143, 10);  // x=180, y=150, grootte=10 (pas positie naar wens aan)
+
+// Spookje tekenen rechts van Pacman
+drawGhost(235, 135, 10);
+
+
+
+
+
   myGLCD.setTextColor(TFT_WHITE, TFT_BLACK);
   myGLCD.setTextSize(2);          // Text size multiplier
   //myGLCD.setFreeFont(FF20);
-  setGfxFont(FF20);
+  setGfxFont(FF18);
 
 
   // First Digit
   if (((d1 != c1) || (xsetup == true)) && (d1 != 0)) { // Do not print zero in first digit position
-    myGLCD.drawNumber(d1, 51, 85); // Printing thisnumber impacts LFH walls so redraw impacted area
+    myGLCD.drawNumber(d1, 94, 103); // Printing thisnumber impacts LFH walls so redraw impacted area
     // ---------------- reprint two left wall pillars
     //    myGLCD.setColor(1, 73, 240);
 
@@ -3242,17 +3359,17 @@ void UpdateDisp()
   {
     // Second Digit - Hour ones digit
     if ((d2 != c2) || (xsetup == true)) {
-      myGLCD.drawNumber(d2, 91, 85); // Print 0
+      myGLCD.drawNumber(d2, 121, 103); // Print 0
     }
 
     // Third Digit - Minute tens digit
     if ((d3 != c3) || (xsetup == true)) {
-      myGLCD.drawNumber(d3, 156, 85); // Was 145
+      myGLCD.drawNumber(d3, 166, 103); // Was 145
     }
 
     // Fourth Digit - Minute ones digit
     if ((d4 != c4) || (xsetup == true)) {
-      myGLCD.drawNumber(d4, 211, 85); // Was 205
+      myGLCD.drawNumber(d4, 189, 103); // Was 205
     }
 
     if (xsetup == true) {
@@ -3274,32 +3391,32 @@ void UpdateDisp()
       myGLCD.drawString("PM", 300, 148);
     }
     // Round dots (Colon between hour and minute)
-    if (clockConfig.alarmStatus == ALARM_ENABLED)
+   // if (clockConfig.alarmStatus == ALARM_ENABLED)
+    //{
+     // myGLCD.fillCircle(148, 112, 4, TFT_RED);
+     // myGLCD.fillCircle(148, 132, 4, TFT_RED);
+    //}
+    //else
     {
-      myGLCD.fillCircle(148, 112, 4, TFT_RED);
-      myGLCD.fillCircle(148, 132, 4, TFT_RED);
-    }
-    else
-    {
-      myGLCD.fillCircle(148, 112, 4, TFT_WHITE);
-      myGLCD.fillCircle(148, 132, 4, TFT_WHITE);
+    //  myGLCD.fillCircle(148, 112, 4, TFT_WHITE);
+     // myGLCD.fillCircle(148, 132, 4, TFT_WHITE);
     }
   }
   else            // 24 hour clock display
   {
     // Second Digit - Hour ones digit
     if ((d2 != c2) || (xsetup == true)) {
-      myGLCD.drawNumber(d2, 99, 85); // 91, Print 0
+      myGLCD.drawNumber(d2, 121, 103); // 91, Print 0
     }
 
     // Third Digit - Minute tens digit
     if ((d3 != c3) || (xsetup == true)) {
-      myGLCD.drawNumber(d3, 163, 85); // 156, Was 145
+      myGLCD.drawNumber(d3, 164, 103); // 156, Was 145
     }
 
     // Fourth Digit - Minute ones digit
     if ((d4 != c4) || (xsetup == true)) {
-      myGLCD.drawNumber(d4, 215, 85); // 211, Was 205
+      myGLCD.drawNumber(d4, 189, 103); // 211, Was 205
     }
 
     if (xsetup == true) {
@@ -3345,6 +3462,15 @@ void UpdateDisp()
   c2 = d2;
   c3 = d3;
   c4 = d4;
+
+// Teken een rechthoek om de tijd (vier cijfers)
+// Bepaalde marge toegevoegd voor mooiere stijl
+myGLCD.drawRoundRect(62, 80, 194, 82, 5, TFT_BLUE);  // x, y, breedte, hoogte, radius, kleur //binnenste (kleinere) rand
+myGLCD.drawRoundRect(59, 77, 200, 88, 5, TFT_BLUE);  // x, y, breedte, hoogte, radius, kleur //buitenste (grotere) rand
+
+
+
+  
 }
 
 
